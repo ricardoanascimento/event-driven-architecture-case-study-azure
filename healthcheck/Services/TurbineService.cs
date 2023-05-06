@@ -30,9 +30,9 @@ public class TurbineService
         var latestAggregateDocument = GetMostRecentTurbineDataAggregate();
 
         var isEveryThingAnOutage = !latestAggregateDocument.Telemetries.Any(e => e.Volt >= _voltageThreshold);
-        var isWhitinTimeThresholdRange = latestAggregateDocument.Telemetries.Any(doc => Math.Abs((latestAggregateDocument.OldestRecordAt - doc.TimeStamp).TotalSeconds) >= _timeThresholdInSeconds);
+        var isWhitinAcceptableRange = (latestAggregateDocument.CreatedAt.AddSeconds(_timeThresholdInSeconds) - latestAggregateDocument.OldestRecordAt).TotalSeconds <= 10;
 
-        return isEveryThingAnOutage && isWhitinTimeThresholdRange;
+        return isEveryThingAnOutage && isWhitinAcceptableRange;
     }
 
     public TurbineDataAggregate GetMostRecentTurbineDataAggregate()
