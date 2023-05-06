@@ -17,28 +17,6 @@ public class CosmosDbService
         _containerName = containerName;
     }
 
-    // public List<TurbineData> GetLatestDocumentsWihtinRangeByTurbineId(string turbineId, int timeThresholdInMinutes)
-    // {
-    //     var container = _cosmosClient.GetContainer(_databaseName, _containerName);
-    //     var query = new QueryDefinition("SELECT * FROM c WHERE c.turbineId = @turbineId AND c.timeStamp >= @timeThreshold ORDER BY c.timeStamp DESC")
-    //         .WithParameter("@turbineId", turbineId)
-    //         .WithParameter("@timeThreshold", DateTime.UtcNow.AddMinutes(-timeThresholdInMinutes).ToString("o"));
-    //     var iterator = container.GetItemQueryIterator<TurbineData>(query);
-
-    //     var documents = new List<TurbineData>();
-
-    //     while (iterator.HasMoreResults)
-    //     {
-    //         var response = iterator.ReadNextAsync().Result;
-    //         foreach (var document in response)
-    //         {
-    //             documents.Add(document);
-    //         }
-    //     }
-
-    //     return documents;
-    // }
-
     public TurbineDataAggregate GetLatestTurbineDataAggregateByTurbineId(string turbineId, DateTime earliestDate)
     {
         var container = _cosmosClient.GetContainer(_databaseName, _containerName);

@@ -7,7 +7,7 @@ public class TurbineService
     public readonly TurbineData latestTelemetry;
 
     private readonly CosmosDbService _cosmosDbService;
-    private readonly int _timeThresholdInMinutes;
+    private readonly int _timeThresholdInSeconds;
     private readonly float _voltageThreshold;
     private readonly DateTime _earliestDate;
 
@@ -18,7 +18,7 @@ public class TurbineService
         var containerName = Environment.GetEnvironmentVariable(environmentPreFix + "_AGGREGATE_CONTAINER_NAME");
         _cosmosDbService = new CosmosDbService(containerName);
 
-        _timeThresholdInMinutes = int.Parse(Environment.GetEnvironmentVariable(environmentPreFix + "_TIME_THRESHOLD_IN_MINUTES"));
+        _timeThresholdInSeconds = int.Parse(Environment.GetEnvironmentVariable(environmentPreFix + "_TIME_THRESHOLD_IN_SECONDS"));
 
         _voltageThreshold = float.Parse(Environment.GetEnvironmentVariable("VOLTAGE_THRESHOLD"));
 
@@ -30,7 +30,7 @@ public class TurbineService
         var latestAggregateDocument = GetMostRecentTurbineDataAggregate();
 
         var isEveryThingAnOutage = !latestAggregateDocument.Telemetries.Any(e => e.Volt >= _voltageThreshold);
-        var isWhitinTimeThresholdRange = latestAggregateDocument.Telemetries.Any(doc => Math.Abs((latestAggregateDocument.OldestRecordAt - doc.TimeStamp).TotalMinutes) >= _timeThresholdInMinutes);
+        var isWhitinTimeThresholdRange = latestAggregateDocument.Telemetries.Any(doc => Math.Abs((latestAggregateDocument.OldestRecordAt - doc.TimeStamp).TotalSeconds) >= _timeThresholdInSeconds);
 
         return isEveryThingAnOutage && isWhitinTimeThresholdRange;
     }

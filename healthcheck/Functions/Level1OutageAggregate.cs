@@ -14,8 +14,8 @@ namespace Turbine
         {
             log.LogInformation($"ServiceBusTrigger executed at: {DateTime.UtcNow}");
 
-            var timeThresholdInMinutes = int.Parse(Environment.GetEnvironmentVariable("LEVEL1_TIME_THRESHOLD_IN_MINUTES"));
-            var earliestDate = DateTime.UtcNow.AddMinutes(-timeThresholdInMinutes);
+            var timeThresholdInSeconds = int.Parse(Environment.GetEnvironmentVariable("LEVEL1_TIME_THRESHOLD_IN_SECONDS"));
+            var earliestDate = DateTime.UtcNow.AddSeconds(-timeThresholdInSeconds);
 
             var turbineService = new TurbineService(telemetry, "LEVEL1", earliestDate);
             var turbineDataAggregate = turbineService.GetMostRecentTurbineDataAggregate();

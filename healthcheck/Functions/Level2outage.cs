@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using static AlertService;
 
 namespace Turbine
 {
@@ -13,8 +14,8 @@ namespace Turbine
         {
             log.LogInformation($"ServiceBusTrigger executed at: {DateTime.UtcNow}");
 
-            var timeThresholdInMinutes = int.Parse(Environment.GetEnvironmentVariable("LEVEL2_TIME_THRESHOLD_IN_MINUTES")) + 1;
-            var earliestDate = DateTime.UtcNow.AddMinutes(-timeThresholdInMinutes);
+            var timeThresholdInSeconds = int.Parse(Environment.GetEnvironmentVariable("LEVEL2_TIME_THRESHOLD_IN_SECONDS"));
+            var earliestDate = GetEarliestDateToProccessAlert(timeThresholdInSeconds);
 
             var turbineService = new TurbineService(telemetry, "LEVEL2", earliestDate);
             var turbineStoppedWorking = turbineService.HasTheTurbineStoppedWorking();

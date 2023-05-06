@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-public static class TurbineDataAggregateExtensions
+public static class TurbineExtensions
 {
     public static TurbineDataAggregate AddTelemetry(this TurbineDataAggregate turbineDataAggregate, TurbineData turbineData)
     {
