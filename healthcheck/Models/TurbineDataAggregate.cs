@@ -19,6 +19,6 @@ public class TurbineDataAggregate
     [JsonProperty("createdAt")]
     public DateTime CreatedAt { get; set; }
 
-    [JsonProperty("updatedAt")]
-    public DateTime UpdatedAt { get; set; }
+    [JsonProperty("oldestRecordAt")]
+    public DateTime OldestRecordAt { get; set; }
 }

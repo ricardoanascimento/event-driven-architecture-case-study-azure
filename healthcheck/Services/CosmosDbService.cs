@@ -17,29 +17,29 @@ public class CosmosDbService
         _containerName = containerName;
     }
 
-    public List<TurbineData> GetLatestDocumentsWihtinRangeByTurbineId(string turbineId, int timeThresholdInMinutes)
-    {
-        var container = _cosmosClient.GetContainer(_databaseName, _containerName);
-        var query = new QueryDefinition("SELECT * FROM c WHERE c.turbineId = @turbineId AND c.timeStamp >= @timeThreshold ORDER BY c.timeStamp DESC")
-            .WithParameter("@turbineId", turbineId)
-            .WithParameter("@timeThreshold", DateTime.UtcNow.AddMinutes(-timeThresholdInMinutes).ToString("o"));
-        var iterator = container.GetItemQueryIterator<TurbineData>(query);
+    // public List<TurbineData> GetLatestDocumentsWihtinRangeByTurbineId(string turbineId, int timeThresholdInMinutes)
+    // {
+    //     var container = _cosmosClient.GetContainer(_databaseName, _containerName);
+    //     var query = new QueryDefinition("SELECT * FROM c WHERE c.turbineId = @turbineId AND c.timeStamp >= @timeThreshold ORDER BY c.timeStamp DESC")
+    //         .WithParameter("@turbineId", turbineId)
+    //         .WithParameter("@timeThreshold", DateTime.UtcNow.AddMinutes(-timeThresholdInMinutes).ToString("o"));
+    //     var iterator = container.GetItemQueryIterator<TurbineData>(query);
 
-        var documents = new List<TurbineData>();
+    //     var documents = new List<TurbineData>();
 
-        while (iterator.HasMoreResults)
-        {
-            var response = iterator.ReadNextAsync().Result;
-            foreach (var document in response)
-            {
-                documents.Add(document);
-            }
-        }
+    //     while (iterator.HasMoreResults)
+    //     {
+    //         var response = iterator.ReadNextAsync().Result;
+    //         foreach (var document in response)
+    //         {
+    //             documents.Add(document);
+    //         }
+    //     }
 
-        return documents;
-    }
+    //     return documents;
+    // }
 
-    public TurbineDataAggregate GetLatestByTurbineId(string turbineId, DateTime earliestDate)
+    public TurbineDataAggregate GetLatestTurbineDataAggregateByTurbineId(string turbineId, DateTime earliestDate)
     {
         var container = _cosmosClient.GetContainer(_databaseName, _containerName);
         var query = new QueryDefinition("SELECT TOP 1 * FROM t WHERE t.turbineId = @turbineId AND t.createdAt >= @timeThreshold ORDER BY t.createdAt DESC")
