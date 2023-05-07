@@ -9,11 +9,13 @@ public class TurbineService
     private readonly CosmosDbService _cosmosDbService;
     private readonly int _timeThresholdInSeconds;
     private readonly float _voltageThreshold;
-    private readonly DateTime _earliestDate;
+    private readonly string _environmentPreFix;
 
-    public TurbineService(string telemetry, string environmentPreFix, DateTime earliestDate)
+    public TurbineService(string telemetry, string environmentPreFix)
     {
         latestTelemetry = JsonConvert.DeserializeObject<TurbineData>(telemetry);
+
+        _environmentPreFix = environmentPreFix;
 
         var containerName = Environment.GetEnvironmentVariable(environmentPreFix + "_AGGREGATE_CONTAINER_NAME");
         _cosmosDbService = new CosmosDbService(containerName);
@@ -21,8 +23,6 @@ public class TurbineService
         _timeThresholdInSeconds = int.Parse(Environment.GetEnvironmentVariable(environmentPreFix + "_TIME_THRESHOLD_IN_SECONDS"));
 
         _voltageThreshold = float.Parse(Environment.GetEnvironmentVariable("VOLTAGE_THRESHOLD"));
-
-        _earliestDate = earliestDate;
     }
 
     public bool HasTheTurbineStoppedWorking()
@@ -37,7 +37,10 @@ public class TurbineService
 
     public TurbineDataAggregate GetMostRecentTurbineDataAggregate()
     {
-        var latestAggregateDocument = _cosmosDbService.GetLatestTurbineDataAggregateByTurbineId(latestTelemetry.TurbineId, _earliestDate);
+        var timeThresholdInSeconds = int.Parse(Environment.GetEnvironmentVariable(_environmentPreFix + "_TIME_THRESHOLD_IN_SECONDS"));
+        var earliestDate = latestTelemetry.TimeStamp.AddSeconds(-timeThresholdInSeconds);
+
+        var latestAggregateDocument = _cosmosDbService.GetLatestTurbineDataAggregateByTurbineId(latestTelemetry.TurbineId, earliestDate);
         return latestAggregateDocument.AddTelemetry(latestTelemetry);
     }
 }
