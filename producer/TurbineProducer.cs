@@ -13,37 +13,39 @@ namespace Turbine.Producer
     {
         [FunctionName("TurbineProducer")]
         [return: ServiceBus("%TOPIC_NAME%", Connection = "SERVICE_BUS_CONNECTION_STRING")]
-        public static async Task<string> RunAsync(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
+        // public static async Task<string> RunAsync(
+        public static string Run(
+            // [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
+            [TimerTrigger("*/10 * * * * *")] TimerInfo myTimer,
             ILogger log)
         {
             log.LogInformation($"HttpTrigger executed at: {DateTime.Now}");
 
             var serializedEvent = string.Empty;
 
-            try
+            // try
+            // {
+            //     string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            //     dynamic data = JsonSerializer.Deserialize<TurbineData>(requestBody);
+            //     serializedEvent = JsonSerializer.Serialize(data);
+            // }
+            // catch (Exception ex)
+            // {
+            var random = new Random();
+            var turbineData = new TurbineData()
             {
-                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                dynamic data = JsonSerializer.Deserialize<TurbineData>(requestBody);
-                serializedEvent = JsonSerializer.Serialize(data);
-            }
-            catch (Exception ex)
-            {
-                var random = new Random();
-                var turbineData = new TurbineData()
-                {
-                    TurbineId = "eaa0ff86-12a9-496e-9cd5-38ce609dce17",
-                    // Volt = (float)random.NextDouble() * 1000,
-                    Volt = 89,
-                    Amp = (float)random.NextDouble() * 100,
-                    RPM = random.Next(1000, 2000),
-                    TimeStamp = DateTime.UtcNow
-                };
+                TurbineId = "eaa0ff86-12a9-496e-9cd5-38ce609dce17",
+                // Volt = (float)random.NextDouble() * 1000,
+                Volt = 89,
+                Amp = (float)random.NextDouble() * 100,
+                RPM = random.Next(1000, 2000),
+                TimeStamp = DateTime.UtcNow
+            };
 
-                serializedEvent = JsonSerializer.Serialize(turbineData);
+            serializedEvent = JsonSerializer.Serialize(turbineData);
 
-                log.LogError(ex, "Error parsing event!");
-            }
+            //     log.LogError(ex, "Error parsing event!");
+            // }
 
             log.LogInformation($"Pushig event: {serializedEvent}");
 
