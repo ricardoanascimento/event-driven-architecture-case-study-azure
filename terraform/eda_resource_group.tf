@@ -1,4 +1,4 @@
 resource "azurerm_resource_group" "edastudycase" {
-  name     = "eda-study-case"
+  name     = "rg-turbine"
   location = "West Europe"
 }

@@ -22,17 +22,17 @@ module "function_app_producer" {
   resource_group_location = "West Europe"
   app_service_plan_id = module.turbine_producer_service_plan.app_service_plan_id
   storage_account_name = module.study_case_storage_account.name
-  storage_account_access_key = module.study_case_storage_account.primary_access_key
+  storage_account_access_key = module.study_case_storage_account.primary_connection_string
   application_insights_connection_string = module.application_insights.connection_string
   application_insights_key = module.application_insights.instrumentation_key
   app_settings = <<EOF
   {
     "AzureWebJobs.TurbineProducer.Disabled": "1",
-    "AzureWebJobsStorage": ${jsonencode(module.study_case_storage_account.primary_access_key)},
+    "AzureWebJobsStorage": ${jsonencode(module.study_case_storage_account.primary_connection_string)},
     "WEBSITE_RUN_FROM_PACKAGE": "1",
     "FUNCTIONS_EXTENSION_VERSION": "~4",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": ${jsonencode(module.study_case_storage_account.primary_access_key)},
+    "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": ${jsonencode(module.study_case_storage_account.primary_connection_string)},
     "WEBSITE_CONTENTSHARE": "turbine19027572a010",
     "WEBSITE_RUN_FROM_PACKAGE": "1",
     "TOPIC_NAME": "telemetry",
@@ -57,16 +57,16 @@ module "function_app_healthcheck" {
   resource_group_location = "West Europe"
   app_service_plan_id = module.turbine_consumer_service_plan.app_service_plan_id
   storage_account_name = module.study_case_storage_account.name
-  storage_account_access_key = module.study_case_storage_account.primary_access_key
+  storage_account_access_key = module.study_case_storage_account.primary_connection_string
   application_insights_connection_string = module.application_insights.connection_string
   application_insights_key = module.application_insights.instrumentation_key
   app_settings = <<EOF
   {
-    "AzureWebJobsStorage": ${jsonencode(module.study_case_storage_account.primary_access_key)},
+    "AzureWebJobsStorage": ${jsonencode(module.study_case_storage_account.primary_connection_string)},
     "WEBSITE_RUN_FROM_PACKAGE": "1",    
     "FUNCTIONS_EXTENSION_VERSION": "~4",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": ${jsonencode(module.study_case_storage_account.primary_access_key)},
+    "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": ${jsonencode(module.study_case_storage_account.primary_connection_string)},
     "WEBSITE_CONTENTSHARE": "healthckeck125154bdf0",
     "WEBSITE_RUN_FROM_PACKAGE": "1",
     "COSMOS_DB_CONNECTION_STRING": ${jsonencode(module.cosmos_db.primary_connection_string)},
