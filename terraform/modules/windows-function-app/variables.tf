@@ -1,0 +1,9 @@
+variable "name" {}
+variable "resource_group_name" {}
+variable "resource_group_location" {}
+variable "app_service_plan_id" {}
+variable "storage_account_name" {}
+variable "storage_account_access_key" {}
+variable "app_settings" {}
+variable "application_insights_connection_string" {}
+variable "application_insights_key" {}
